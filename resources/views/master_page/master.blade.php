@@ -97,18 +97,20 @@
             <a href="{{ route('sales.index') }}" class="nav-link {{ request()->routeIs('sales.*') ? 'active' : '' }}">
                 <i class="bx bxs-cart me-2"></i> {{ __('messages.sales') }}
             </a>
-            <a href="{{ route('products.index') }}" class="nav-link {{ request()->routeIs('products.index') || request()->routeIs('products.create') || request()->routeIs('products.show') || request()->routeIs('products.edit') ? 'active' : '' }}">
-                <i class="bx bxs-box me-2"></i> {{ __('messages.products') }}
-            </a>
-            <a href="{{ route('customers.index') }}" class="nav-link {{ request()->routeIs('customers.index') || request()->routeIs('customers.create') || request()->routeIs('customers.show') || request()->routeIs('customers.edit') ? 'active' : '' }}">
-                <i class="bx bxs-user me-2"></i> {{ __('messages.customers') }}
-            </a>
-            <a href="{{ route('reports.index') }}" class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}">
-                <i class="bx bxs-report me-2"></i> {{ __('messages.reports') }}
-            </a>
-            <a href="{{ route('settings.index') }}" class="nav-link {{ request()->routeIs('settings') ? 'active' : '' }}">
-                <i class="bx bxs-cog me-2"></i> {{ __('messages.settings') }}
-            </a>
+            @if (auth()->user()->role == 'admin')
+                <a href="{{ route('products.index') }}" class="nav-link {{ request()->routeIs('products.index') || request()->routeIs('products.create') || request()->routeIs('products.show') || request()->routeIs('products.edit') ? 'active' : '' }}">
+                    <i class="bx bxs-box me-2"></i> {{ __('messages.products') }}
+                </a>
+                <a href="{{ route('customers.index') }}" class="nav-link {{ request()->routeIs('customers.index') || request()->routeIs('customers.create') || request()->routeIs('customers.show') || request()->routeIs('customers.edit') ? 'active' : '' }}">
+                    <i class="bx bxs-user me-2"></i> {{ __('messages.customers') }}
+                </a>
+                <a href="{{ route('reports.index') }}" class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}">
+                    <i class="bx bxs-report me-2"></i> {{ __('messages.reports') }}
+                </a>
+                <a href="{{ route('settings.index') }}" class="nav-link {{ request()->routeIs('settings') ? 'active' : '' }}">
+                    <i class="bx bxs-cog me-2"></i> {{ __('messages.settings') }}
+                </a>
+            @endif
         </nav>
 
         <!-- Language Switcher -->

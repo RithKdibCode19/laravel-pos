@@ -5,19 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use App\Exports\SalesExport; // Import your export class
-use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        if (auth()->id() !== 1) {
-            return back()->with('error', 'You do not have permission to access settings.');
-        }
-        
         $query = Product::with('category');
         
         if (request('category_id')) {
@@ -40,23 +34,29 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'category_id' => 'nullable|exists:categories,id',
-            'sku' => 'required|numeric|min:0',
+            'sku' => 'required|string|max:255',
             'barcode' => 'nullable|string|unique:products',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:4048',
         ]);
+        
+        // dd($validator);
+        if ($validator->fails()) {
+            dd($validator->errors());
+        }
 
-        $data = $request->all();
-
+        $data = $validator->validated();
+        
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');
             $data['image'] = basename($imagePath);
-        }
+            }
+            
 
         Product::create($data);
 
@@ -65,16 +65,20 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'category_id' => 'nullable|exists:categories,id',
-            'sku' => 'required|numeric|min:0',
-            'barcode' => 'nullable|string|unique:products,barcode,' . $product->id,
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4048',
+            'sku' => 'required|string|max:255',
+            'barcode' => 'nullable|string|unique:products',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:4048',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
         $data = $request->all();
 

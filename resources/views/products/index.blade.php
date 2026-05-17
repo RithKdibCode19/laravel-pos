@@ -88,7 +88,7 @@
 
     <!-- Add Product Modal -->
     <div class="modal fade" id="addProductModal" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf

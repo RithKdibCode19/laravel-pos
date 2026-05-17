@@ -163,18 +163,20 @@
             <a href="{{ route('sales.index') }}" class="{{ request()->routeIs('sales.*') ? 'active' : '' }}">
                 <i class="fas fa-shopping-cart"></i> {{ __('messages.sales') }}
             </a>
-            <a href="{{ route('products.index') }}" class="{{ request()->routeIs('products.*') ? 'active' : '' }}">
-                <i class="fas fa-box"></i> {{ __('messages.products') }}
-            </a>
-            <a href="{{ route('customers.index') }}" class="{{ request()->routeIs('customers.*') ? 'active' : '' }}">
-                <i class="fas fa-users"></i> {{ __('messages.customers') }}
-            </a>
-            <a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? 'active' : '' }}">
-                <i class="fas fa-chart-bar"></i> {{ __('messages.reports') }}
-            </a>
-            <a href="{{ route('settings.index') }}" class="{{ request()->routeIs('settings.*') ? 'active' : '' }}">
-                <i class="fas fa-cog"></i> {{ __('messages.settings') }}
-            </a>
+            @if (auth()->user()->role == 'admin')
+                <a href="{{ route('products.index') }}" class="{{ request()->routeIs('products.*') ? 'active' : '' }}">
+                    <i class="fas fa-box"></i> {{ __('messages.products') }}
+                </a>
+                <a href="{{ route('customers.index') }}" class="{{ request()->routeIs('customers.*') ? 'active' : '' }}">
+                    <i class="fas fa-users"></i> {{ __('messages.customers') }}
+                </a>
+                <a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? 'active' : '' }}">
+                    <i class="fas fa-chart-bar"></i> {{ __('messages.reports') }}
+                </a>
+                <a href="{{ route('settings.index') }}" class="{{ request()->routeIs('settings.*') ? 'active' : '' }}">
+                    <i class="fas fa-cog"></i> {{ __('messages.settings') }}
+                </a>
+            @endif
         </div>
 
         <!-- Language Switcher -->

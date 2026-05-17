@@ -38,7 +38,37 @@ Route::middleware('guest')->group(function () {
 });
 
 // Protected Routes
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('admin')->group(function () {
+        // Report Routes
+        Route::prefix('reports')->name('reports.')->group(function () {
+            Route::get('/', [ReportController::class, 'index'])->name('index');
+            Route::get('/sales', [ReportController::class, 'sales'])->name('sales');
+            Route::get('/sales/export', [ReportController::class, 'salesExport'])->name('sales.export');
+            Route::get('/inventory', [ReportController::class, 'inventory'])->name('inventory');
+            Route::get('/inventory/export', [ReportController::class, 'inventoryExport'])->name('inventory.export');
+            Route::get('/customers', [ReportController::class, 'customers'])->name('customers');
+            Route::get('/customers/export', [ReportController::class, 'customersExport'])->name('customers.export');
+        });
+
+        // Settings Routes
+        Route::prefix('settings')->name('settings.')->group(function () {
+            Route::get('/', [SettingController::class, 'index'])->name('index');
+            Route::get('/profile', [SettingController::class, 'profile'])->name('profile');
+            Route::post('/profile', [SettingController::class, 'updateProfile'])->name('profile.update');
+            Route::get('/password', [SettingController::class, 'password'])->name('password');
+            Route::post('/password', [SettingController::class, 'updatePassword'])->name('password.update');
+        });
+
+        // Product Routes
+        Route::resource('products', ProductController::class);
+        Route::get('products/{product}/stock', [ProductController::class, 'stock'])->name('products.stock');
+        Route::post('products/{product}/stock', [ProductController::class, 'updateStock'])->name('products.stock.update');
+
+        // Customer Routes
+        Route::resource('customers', CustomerController::class);
+        Route::get('customers/{customer}/history', [CustomerController::class, 'history'])->name('customers.history');
+    });
     // Language Switcher Route
     Route::get('language/{locale}', [LanguageController::class, 'switchLang'])->name('language.switch');
     
@@ -52,35 +82,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('sales', SaleController::class);
     Route::get('sales/{sale}/print', [SaleController::class, 'invoice'])->name('sales.print');
     Route::get('sales/{sale}/invoice', [SaleController::class, 'invoice'])->name('sales.invoice');
-
-    // Product Routes
-    Route::resource('products', ProductController::class);
-    Route::get('products/{product}/stock', [ProductController::class, 'stock'])->name('products.stock');
-    Route::post('products/{product}/stock', [ProductController::class, 'updateStock'])->name('products.stock.update');
-
-    // Customer Routes
-    Route::resource('customers', CustomerController::class);
-    Route::get('customers/{customer}/history', [CustomerController::class, 'history'])->name('customers.history');
-
-    // Report Routes
-    Route::prefix('reports')->name('reports.')->group(function () {
-        Route::get('/', [ReportController::class, 'index'])->name('index');
-        Route::get('/sales', [ReportController::class, 'sales'])->name('sales');
-        Route::get('/sales/export', [ReportController::class, 'salesExport'])->name('sales.export');
-        Route::get('/inventory', [ReportController::class, 'inventory'])->name('inventory');
-        Route::get('/inventory/export', [ReportController::class, 'inventoryExport'])->name('inventory.export');
-        Route::get('/customers', [ReportController::class, 'customers'])->name('customers');
-        Route::get('/customers/export', [ReportController::class, 'customersExport'])->name('customers.export');
-    });
-
-    // Settings Routes
-    Route::prefix('settings')->name('settings.')->group(function () {
-        Route::get('/', [SettingController::class, 'index'])->name('index');
-        Route::get('/profile', [SettingController::class, 'profile'])->name('profile');
-        Route::post('/profile', [SettingController::class, 'updateProfile'])->name('profile.update');
-        Route::get('/password', [SettingController::class, 'password'])->name('password');
-        Route::post('/password', [SettingController::class, 'updatePassword'])->name('password.update');
-    });
 
     // Category Routes
     Route::resource('categories', CategoryController::class)->except(['index', 'create', 'edit', 'show']);
