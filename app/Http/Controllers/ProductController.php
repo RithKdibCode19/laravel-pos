@@ -72,28 +72,40 @@ class ProductController extends Controller
             'stock' => 'required|integer|min:0',
             'category_id' => 'nullable|exists:categories,id',
             'sku' => 'required|string|max:255',
-            'barcode' => 'nullable|string|unique:products',
+
+            // FIX: ignore current product id
+            'barcode' => 'nullable|string|unique:products,barcode,' . $product->id,
+
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:4048',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
 
-        $data = $request->all();
+        $data = $validator->validated();
 
+        // Handle image update
         if ($request->hasFile('image')) {
-            // Delete old image if it exists
+
+            // delete old image
             if ($product->image) {
                 Storage::disk('public')->delete('products/' . $product->image);
             }
+
+            // store new image
             $imagePath = $request->file('image')->store('products', 'public');
+
             $data['image'] = basename($imagePath);
         }
 
         $product->update($data);
 
-        return redirect()->route('products.index')->with('success', 'Product updated successfully');
+        return redirect()
+            ->route('products.index')
+            ->with('success', 'Product updated successfully');
     }
 
     public function destroy(Product $product)
