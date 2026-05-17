@@ -11,7 +11,7 @@ class SettingController extends Controller
 {
     public function index()
     {
-        if (auth()->id() !== 1) {
+        if (auth()->user()->role !== 'admin') {
             return back()->with('error', 'You do not have permission to access settings.');
         }
 

@@ -7,8 +7,6 @@ use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Exports\SalesExport;
 use Maatwebsite\Excel\Facades\Excel;
 
